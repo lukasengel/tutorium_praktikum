@@ -1,8 +1,10 @@
-public class AudioFile {
+import java.io.File;
+
+public abstract class AudioFile {
 	private String pathname;
 	private String filename;
-	private String author;
-	private String title;
+	protected String author;
+	protected String title;
 
 	public AudioFile() {
 	}
@@ -10,6 +12,11 @@ public class AudioFile {
 	public AudioFile(String path) {
 		this.parsePathname(path);
 		this.parseFilename(this.filename);
+
+		final boolean readable = new File(this.pathname).canRead();
+		if (!readable) {
+			throw new RuntimeException(String.format("Cannot read file \"%s\"", this.pathname));
+		}
 	}
 
 	public String getPathname() {
@@ -93,4 +100,16 @@ public class AudioFile {
 	private static char getPlatformSeparator() {
 		return System.getProperty("file.separator").charAt(0);
 	}
+
+	public abstract void play();
+
+	public abstract void togglePause();
+
+	public abstract void stop();
+
+	public abstract String formatDuration();
+
+	public abstract String formatPosition();
+
+	public abstract String[] fields();
 }
