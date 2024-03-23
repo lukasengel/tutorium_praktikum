@@ -1,3 +1,4 @@
+package studiplayer.audio;
 import java.io.File;
 
 public abstract class AudioFile {
@@ -9,13 +10,13 @@ public abstract class AudioFile {
 	public AudioFile() {
 	}
 
-	public AudioFile(String path) {
+	public AudioFile(String path) throws NotPlayableException {
 		this.parsePathname(path);
 		this.parseFilename(this.filename);
 
 		final boolean readable = new File(this.pathname).canRead();
 		if (!readable) {
-			throw new RuntimeException(String.format("Cannot read file \"%s\"", this.pathname));
+			throw new NotPlayableException(this.pathname, String.format("Cannot read file \"%s\"", this.pathname));
 		}
 	}
 
@@ -90,7 +91,7 @@ public abstract class AudioFile {
 
 	@Override
 	public String toString() {
-		return this.author.isEmpty() ? this.title : String.format("%s - %s", this.author, this.title);
+		return this.author == null || this.author.isEmpty() ? this.title : String.format("%s - %s", this.author, this.title);
 	}
 
 	private static boolean isWindows() {
@@ -101,7 +102,7 @@ public abstract class AudioFile {
 		return System.getProperty("file.separator").charAt(0);
 	}
 
-	public abstract void play();
+	public abstract void play() throws NotPlayableException;
 
 	public abstract void togglePause();
 
@@ -110,6 +111,4 @@ public abstract class AudioFile {
 	public abstract String formatDuration();
 
 	public abstract String formatPosition();
-
-	public abstract String[] fields();
 }

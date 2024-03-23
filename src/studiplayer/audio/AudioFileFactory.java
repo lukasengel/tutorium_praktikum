@@ -1,6 +1,7 @@
+package studiplayer.audio;
 
 public class AudioFileFactory {
-	public static AudioFile createAudioFile(String path) {
+	public static AudioFile createAudioFile(String path) throws NotPlayableException {
 		// Extract file extension
 		final int lastDotIndex = path.lastIndexOf('.');
 		final String extension = lastDotIndex > -1 ? path.substring(lastDotIndex + 1) : path;
@@ -9,7 +10,7 @@ public class AudioFileFactory {
 		return switch (extension.toLowerCase()) {
 		case "ogg", "mp3" -> new TaggedFile(path);
 		case "wav" -> new WavFile(path);
-		default -> throw new IllegalArgumentException(String.format("Unknown suffix for AudioFile \"%s\"", path));
+		default -> throw new NotPlayableException(path, String.format("Unknown suffix for AudioFile \"%s\"", path));
 		};
 	}
 }
